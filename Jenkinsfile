@@ -40,11 +40,10 @@ stage('Deploy') {
     steps {
         echo 'Deploying to AWS EC2...'
 
-        sshagent(credentials: ['aws-ec2-key']) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'aws-ec2-key', keyFileVariable: 'KEY')]) {
             sh '''
-            scp -o StrictHostKeyChecking=no calculator.py ubuntu@16.171.21.53:/home/ubuntu/
-
-            ssh -o StrictHostKeyChecking=no ubuntu@16.171.21.53 "ls -l /home/ubuntu/"
+            scp -i $KEY -o StrictHostKeyChecking=no calculator.py ubuntu@16.171.21.53:/home/ubuntu/
+            ssh -i $KEY -o StrictHostKeyChecking=no ubuntu@16.171.21.53 "ls -l /home/ubuntu/"
             '''
         }
     }
