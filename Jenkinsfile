@@ -35,11 +35,17 @@ EOF
         '''
     }
 }
-        stage('Deploy') {
-            steps {
-                echo 'Deployment stage (simulated)'
-                echo 'Application deployed successfully!'
-            }
+       
+stage('Deploy') {
+    steps {
+        echo 'Deploying to AWS EC2...'
+
+        sshagent(credentials: ['aws-ec2-key']) {
+            sh '''
+            scp -o StrictHostKeyChecking=no calculator.py ubuntu@16.171.21.53:/home/ubuntu/
+
+            ssh -o StrictHostKeyChecking=no ubuntu@16.171.21.53 "ls -l /home/ubuntu/"
+            '''
         }
     }
 }
